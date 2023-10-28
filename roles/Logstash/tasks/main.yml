@@ -1,0 +1,22 @@
+- name: Install Logstash in Ubuntu
+  apt:
+    name: logstash
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Download Logstash in CentOS
+  get_url:
+    url: https://artifacts.elastic.co/downloads/logstash/logstash-7.8.0.rpm
+    dest: /tmp/logstash-7.8.0.rpm
+  when: ansible_distribution == "CentOS"
+
+- name: Install Logstash in CentOS
+  yum:
+    name: /tmp/logstash-7.8.0.rpm
+    state: present
+  when: ansible_distribution == "CentOS"
+
+- name: Start Logstash
+  service:
+    name: logstash
+    state: restarted

@@ -1,0 +1,22 @@
+- name: Install Kibana in Ubuntu
+  apt:
+    name: kibana
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: Download Kibana in CentOS
+  get_url:
+    url: https://artifacts.elastic.co/downloads/kibana/kibana-8.4.3-x86_64.rpm
+    dest: /tmp/kibana-8.4.3-x86_64.rpm
+  when: ansible_distribution == "CentOS"
+
+- name: Install Kibana in CentOS
+  yum:
+    name: /tmp/kibana-8.4.3-x86_64.rpm
+    state: latest
+  when: ansible_distribution == "CentOS"
+
+- name: Start Kibana
+  service:
+    name: kibana
+    state: restarted

@@ -1,0 +1,47 @@
+- name: Install GPG (Ubuntu)
+  apt:
+    name: gnupg
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
+- name: Add Elasticsearch APT GPG Key (Ubuntu)
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
+- name: Add the Elasticsearch APT repository (Ubuntu)
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+    state: present
+  when: ansible_distribution == "Ubuntu"
+  become: yes
+
+- name: Update APT Package Cache
+  apt:
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Add the Elasticsearch YUM repository (CentOS)
+  yum_repository:
+    name: elasticsearch
+    description: Elasticsearch repository
+    baseurl: https://artifacts.elastic.co/packages/7.x/yum
+    gpgcheck: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: yes
+  when: ansible_distribution == "CentOS"
+  become: yes
+
+- name: Install Elasticsearch
+  package:
+    name: elasticsearch
+    state: latest
+  become: yes
+
+- name: Start Elasticsearch service
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
+  become: yes
